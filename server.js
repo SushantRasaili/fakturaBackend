@@ -1,15 +1,3 @@
-// const express = require("express");
-// const cors = require("cors");
-// const {
-//   disconnectPostgres,
-//   connectPostgres,
-// } = require("./loaders/pgsqlConnection");
-// const createTables = require("./loaders/createTable");
-// const seedAdmins = require("./loaders/adminSeeder");
-// const errorHandler = require("./middlewares/error.middleware");
-// const authRouter = require("./modules/auth/auth.routes");
-// require("dotenv").config();
-
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
@@ -21,6 +9,7 @@ import authRouter from "./modules/auth/auth.routes.js";
 import { createTables } from "./loaders/createTable.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { seedAdmins } from "./loaders/adminSeeder.js";
+import productRouter from "./modules/products/products.routes.js";
 
 const startServer = async () => {
   try {
@@ -47,6 +36,7 @@ const startServer = async () => {
 
     //Routers
     app.use(`${process.env.API_PREFIX}/auth`, authRouter);
+    app.use(`${process.env.API_PREFIX}/products`, productRouter);
 
     app.use(errorHandler);
 
