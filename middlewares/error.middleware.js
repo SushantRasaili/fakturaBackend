@@ -1,4 +1,4 @@
-const errorHandler = (err, _req, res, _next) => {
+export const errorHandler = (err, _req, res, _next) => {
   let error = { ...err };
   error.messages = err.messages;
 
@@ -12,5 +12,3 @@ const errorHandler = (err, _req, res, _next) => {
     messages: error.messages || ["Server Error"],
   });
 };
-
-module.exports = errorHandler;

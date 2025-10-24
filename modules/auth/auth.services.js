@@ -1,19 +1,19 @@
-import { ErrorResponse } from "../../utils";
-
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import ErrorResponse from "../../utils/index.js";
+import { pgClient } from "../../loaders/pgsqlConnection.js";
 
 export const login = async (body) => {
-  const { username } = body;
+  const { email } = body;
   const userpassword = body.password;
 
-  const users = await pgClient.query(`SELECT * FROM users WHERE username=$1`, [
-    username,
+  const client = await pgClient();
+
+  const users = await client.query(`SELECT * FROM users WHERE email=$1`, [
+    email,
   ]);
 
-  console.log({ users });
-
-  const user = result.rows[0];
+  const user = users.rows[0];
 
   if (!user) throw new ErrorResponse(["User not found"], 400);
 
@@ -21,11 +21,11 @@ export const login = async (body) => {
 
   if (!verified) throw new ErrorResponse(["Invalid credentials"], 400);
 
-  const accessToken = jwt.sign({ id: _id, user }, process.env.JWT_KEY, {
+  const accessToken = jwt.sign({ id: user.id }, process.env.JWT_KEY, {
     expiresIn: "1d",
   });
 
-  return { accessToken, user };
-};
+  const { password, ...userRes } = user;
 
-module.exports = { login };
+  return { accessToken, user: userRes };
+};

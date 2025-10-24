@@ -1,10 +1,10 @@
-const { Pool } = require("pg");
-// const { Pool } = pkg;
+import pkg from "pg";
+const { Pool } = pkg;
 
 let pool = null;
 let client = null;
 
-const connectPostgres = async () => {
+export const connectPostgres = async () => {
   if (!process.env.POSTGRES_URI) {
     throw new Error("POSTGRES_URI not provided 🚫");
   }
@@ -32,7 +32,7 @@ const connectPostgres = async () => {
   return client;
 };
 
-const disconnectPostgres = async () => {
+export const disconnectPostgres = async () => {
   if (client) {
     client.release();
     console.info("PostgreSQL :: Client released 🔵");
@@ -48,10 +48,8 @@ const disconnectPostgres = async () => {
 };
 
 //get pg client
-const pgClient = async () => {
+export const pgClient = async () => {
   if (client) return client;
   console.info("PostgreSQL :: Creating new client connection 🚀");
   return connectPostgres();
 };
-
-module.exports = { connectPostgres, disconnectPostgres, pgClient };

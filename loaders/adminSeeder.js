@@ -1,7 +1,7 @@
-const { pgClient } = require("./pgsqlConnection");
-const bcrypt = require("bcrypt");
+import { pgClient } from "./pgsqlConnection.js";
+import bcrypt from "bcrypt";
 
-const seedAdmins = async () => {
+export const seedAdmins = async () => {
   const client = await pgClient();
   try {
     const users = await client.query(
@@ -26,5 +26,3 @@ const seedAdmins = async () => {
     console.error(`Error while seeding admin: ${err}`);
   }
 };
-
-module.exports = seedAdmins;

@@ -1,6 +1,6 @@
-const { pgClient } = require("./pgsqlConnection");
+import { pgClient } from "./pgsqlConnection.js";
 
-const createTables = async () => {
+export const createTables = async () => {
   const client = await pgClient();
 
   const queries = `
@@ -36,5 +36,3 @@ const createTables = async () => {
     console.error("Error creating tables:", err);
   }
 };
-
-module.exports = createTables;

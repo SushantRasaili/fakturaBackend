@@ -1,8 +1,7 @@
-const authService = require("./auth.services");
+import { asyncHandler } from "../../middlewares/asyncHandler.middleware.js";
+import * as authService from "./auth.services.js";
 
-const login = asyncHandler(async (req, res) => {
-  console.log("Login user");
-
+export const login = asyncHandler(async (req, res) => {
   const { body } = req;
 
   const { user, accessToken } = await authService.login(body);
@@ -15,5 +14,3 @@ const login = asyncHandler(async (req, res) => {
     },
   });
 });
-
-module.exports = { login };
