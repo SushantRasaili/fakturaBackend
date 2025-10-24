@@ -10,6 +10,9 @@ import { createTables } from "./loaders/createTable.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { seedAdmins } from "./loaders/adminSeeder.js";
 import productRouter from "./modules/products/products.routes.js";
+import { populateLanguage } from "./populateDB/populateLanguage.js";
+import languageRouter from "./modules/languages/languages.routes.js";
+// import { populateProducts } from "./populateDB/populateDB.js";
 
 const startServer = async () => {
   try {
@@ -26,8 +29,10 @@ const startServer = async () => {
     //DB loaders
     await connectPostgres();
 
-    await createTables();
+    // await createTables();
 
+    // await populateProducts();
+    // await populateLanguage();
     await seedAdmins();
 
     //DB loaders
@@ -37,6 +42,7 @@ const startServer = async () => {
     //Routers
     app.use(`${process.env.API_PREFIX}/auth`, authRouter);
     app.use(`${process.env.API_PREFIX}/products`, productRouter);
+    app.use(`${process.env.API_PREFIX}/languages`, languageRouter);
 
     app.use(errorHandler);
 

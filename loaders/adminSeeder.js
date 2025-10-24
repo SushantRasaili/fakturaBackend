@@ -6,7 +6,7 @@ export const seedAdmins = async () => {
   try {
     const users = await client.query(
       "SELECT * FROM users WHERE email=$1 AND role =$2",
-      ["email", "ADMIN"]
+      ["johnAdmin@gmail.com", "ADMIN"]
     );
 
     const userCount = users.rowCount;
@@ -16,7 +16,7 @@ export const seedAdmins = async () => {
 
     console.log({ userCount });
 
-    if (userCount !== 0) {
+    if (userCount === 0) {
       await client.query(
         "INSERT INTO users (name, email, password, role, address) VALUES ($1,$2,$3,$4,$5) ",
         ["John Andre", "johnAdmin@gmail.com", hash, "ADMIN", "Storfjord"]
