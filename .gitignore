@@ -1,0 +1,8 @@
+build/
+node_modules/
+.env
+logs
+.env*
+package-lock.json
+*.log
+*.sh

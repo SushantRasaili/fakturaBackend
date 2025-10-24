@@ -1,0 +1,87 @@
+const express = require("express");
+const cors = require("cors");
+const {
+  disconnectPostgres,
+  connectPostgres,
+} = require("./loaders/pgsqlConnection");
+const createTables = require("./loaders/createTable");
+const seedAdmins = require("./loaders/adminSeeder");
+const errorHandler = require("./middlewares/error.middleware");
+const authRouter = require("./modules/auth/auth.routes");
+require("dotenv").config();
+
+const startServer = async () => {
+  try {
+    // await loader();
+
+    const app = express();
+
+    app.use(cors());
+
+    app.use(express.json({ limit: "100mb" }));
+    app.use(express.text());
+    app.use(express.urlencoded({ extended: true, limit: "100mb" }));
+
+    //DB loaders
+    await connectPostgres();
+
+    await createTables();
+
+    await seedAdmins();
+
+    //DB loaders
+
+    app.use(express.json());
+
+    //Routers
+    app.use(`${process.env.API_PREFIX}/auth`, authRouter);
+
+    app.use(errorHandler);
+
+    const server = app.listen(process.env.PORT, () => {
+      console.info(`
+		#############################################
+		Server listening on port: ${process.env.PORT}
+		#############################################
+	`);
+    });
+
+    process.on("SIGTERM", (signal) => {
+      void graceFullShutDown(signal, server);
+    });
+    process.on("SIGINT", (signal) => {
+      void graceFullShutDown(signal, server);
+    });
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};
+
+async function graceFullShutDown(signal, server) {
+  if (signal.length > 0) console.info(`Received signal ${signal}`);
+
+  console.info("Gracefully shutting down server");
+
+  // server.closeAllConnections()
+
+  try {
+    server.close(function (error) {
+      if (error != null) {
+        console.error("Error", error);
+        process.exit(1);
+      } else {
+        console.info("Server closed successfully", error);
+        process.exit(0);
+      }
+    });
+  } catch (error) {
+    console.error("Error", error);
+    setTimeout(() => process.exit(1), 500);
+  }
+
+  //TODO: Disconnect DB
+  await disconnectPostgres();
+}
+
+void startServer();
