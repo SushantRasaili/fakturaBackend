@@ -4,7 +4,9 @@ import ErrorResponse from "../../utils/index.js";
 export const getProducts = async () => {
   const client = await pgClient();
 
-  const products = await client.query(`SELECT * FROM products`);
+  const products = await client.query(
+    `SELECT * FROM products ORDER BY id DESC`
+  );
 
   return products.rows;
 };
