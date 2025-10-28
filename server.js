@@ -6,7 +6,6 @@ import {
   connectPostgres,
 } from "./loaders/pgsqlConnection.js";
 import authRouter from "./modules/auth/auth.routes.js";
-import { createTables } from "./loaders/createTable.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { seedAdmins } from "./loaders/adminSeeder.js";
 import productRouter from "./modules/products/products.routes.js";
@@ -46,7 +45,7 @@ const startServer = async () => {
 
     app.use(errorHandler);
 
-    const server = app.listen(process.env.PORT, () => {
+    const server = app.listen(process.env.PORT, "0.0.0.0", () => {
       console.info(`
 		#############################################
 		Server listening on port: ${process.env.PORT}
